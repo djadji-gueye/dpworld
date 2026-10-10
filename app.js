@@ -32,7 +32,9 @@ const bd=s=>`<span class="badge ${SL[s][1]}">${SL[s][0]}</span>`;
 const toSign=u=>S.docs.filter(d=>d.status==='PUBLIE'&&d.svc===u.svc&&!d.sigs.some(s=>s.u===u.id&&s.v===lv(d).n));
 const toVal=u=>S.docs.filter(d=>d.steps.some(s=>s.st==='EN_COURS'&&s.as===u.id));
 const unread=u=>S.ntf.filter(n=>n.to===u.id&&!n.r).length;
-function list(m){return `<div class="row sp" style="margin-bottom:6px"><div><h1>Documents</h1><p class="sub">Maîtrise des informations documentées</p></div>${m.role==='REDACTEUR'||m.role==='ADMIN'?'<button data-a="new">Nouveau document</button>':''}</div><div class="card sc"><table><thead><tr><th>Code</th><th>Titre</th><th>Version</th><th>Statut</th><th>Service</th><th>Validité</th></tr></thead><tbody>${S.docs.map((d,i)=>`<tr data-a="open" data-i="${i}"><td><b>${d.code}</b></td><td>${esc(d.title)}</td><td>v${lv(d).n}</td><td>${bd(d.status)}</td><td>${SV[d.svc]}</td><td>${d.valid?fd(d.valid):'—'}</td></tr>`).join('')}</tbody></table></div>`}
+let fq='',fs='';
+const rowsH=()=>S.docs.map((d,i)=>[d,i]).filter(([d])=>(!fs||d.status===fs)&&(d.code+' '+d.title).toLowerCase().includes(fq.toLowerCase())).map(([d,i])=>`<tr data-a="open" data-i="${i}"><td><b>${d.code}</b></td><td>${esc(d.title)}</td><td>v${lv(d).n}</td><td>${bd(d.status)}</td><td>${SV[d.svc]}</td><td>${d.valid?fd(d.valid):'—'}</td></tr>`).join('')||'<tr><td colspan="6" class="mut">Aucun document ne correspond.</td></tr>';
+function list(m){return `<div class="row sp" style="margin-bottom:6px"><div><h1>Documents</h1><p class="sub">Maîtrise des informations documentées</p></div>${m.role==='REDACTEUR'||m.role==='ADMIN'?'<button data-a="new">Nouveau document</button>':''}</div><div class="row" style="margin-bottom:14px"><input id="q" type="search" placeholder="Rechercher par code ou titre" aria-label="Rechercher" value="${esc(fq)}" style="flex:1;min-width:200px;margin:0"><select id="fl" aria-label="Filtrer par statut" style="width:auto;margin:0"><option value="">Tous les statuts</option>${Object.keys(SL).map(k=>`<option value="${k}"${fs===k?' selected':''}>${SL[k][0]}</option>`).join('')}</select><button class="sec" data-a="csv">Exporter (Excel)</button><button class="sec" data-a="print">Imprimer (PDF)</button></div><div class="card sc"><table><thead><tr><th>Code</th><th>Titre</th><th>Version</th><th>Statut</th><th>Service</th><th>Validité</th></tr></thead><tbody id="tb">${rowsH()}</tbody></table></div>`}
 function dash(m){const sg=toSign(m),vl=toVal(m),ex=S.docs.filter(d=>d.status==='PUBLIE'&&d.valid&&d.valid<D(30));
  const rows=[...vl.map(d=>[d,'À valider','wa']),...sg.map(d=>[d,'À signer','bl'])];
  const kp=(l,n,c)=>`<div class="card kp"><div class="chip ${c}">${ico('docs',22)}</div><div><div class="mut">${l}</div><div class="kpi">${n}</div></div></div>`;
@@ -60,6 +62,8 @@ function render(){const a=$('#app'),m=me();
 document.addEventListener('submit',e=>{e.preventDefault();const u=U.find(x=>x.email===$('#em').value.trim().toLowerCase());if(!u||$('#pw').value!==PW){$('#err').textContent='Identifiant ou mot de passe incorrect.';return}S.me=u.id;view='dash';save();render()});
 document.addEventListener('click',async e=>{const b=e.target.closest('[data-a]');if(!b||!S)return;const a=b.dataset.a,m=me(),d=S.docs[cur];
  if(a==='reset'){try{localStorage.removeItem(K)}catch(x){}await init();return}
+ if(a==='print'){window.print();return}
+ if(a==='csv'){const hd=['Code','Titre','Version','Statut','Service','Validité','Signatures'],r=S.docs.map(d=>[d.code,d.title,'v'+lv(d).n,SL[d.status][0],SV[d.svc],d.valid?fd(d.valid):'',d.sigs.filter(s=>s.v===lv(d).n).length]);const csv='\ufeff'+[hd,...r].map(l=>l.map(x=>'"'+String(x).replace(/"/g,'""')+'"').join(';')).join('\r\n');const l=document.createElement('a');l.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));l.download='documents.csv';l.click();setTimeout(()=>URL.revokeObjectURL(l.href),1000);return}
  if(a==='out')S.me=null;
  else if(a==='go')view=b.dataset.v;
  else if(a==='new')view='new';
@@ -76,10 +80,13 @@ document.addEventListener('click',async e=>{const b=e.target.closest('[data-a]')
  else if(a==='sign'){if(!$('#rd').checked){toast('Cochez la confirmation de lecture');return}const v=lv(d);d.sigs.push({u:m.id,v:v.n,at:Date.now(),hash:v.hash});log('Signature de lecture v'+v.n,d.code);toast('Signature horodatée enregistrée')}
  save();render()});
 const shrink=f=>new Promise(r=>{const im=new Image,u=URL.createObjectURL(f);im.onload=()=>{const k=Math.min(1,640/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=im.width*k;c.height=im.height*k;c.getContext('2d').drawImage(im,0,0,c.width,c.height);URL.revokeObjectURL(u);r(c.toDataURL('image/jpeg',.7))};im.onerror=()=>r(null);im.src=u});
+document.addEventListener('input',e=>{if(e.target.id==='q'){fq=e.target.value;$('#tb').innerHTML=rowsH()}});
 document.addEventListener('change',async e=>{
+ if(e.target.id==='fl'){fs=e.target.value;$('#tb').innerHTML=rowsH()}
  if(e.target.id==='nm')$('#nc').value=body(e.target.value);
  if(e.target.id==='pf'&&e.target.files[0]){const url=await shrink(e.target.files[0]),d=S.docs[cur];if(!url){toast("Image illisible");return}
   const add=(la,ln)=>{d.proofs.push({url,lat:la,lng:ln,at:Date.now()});log('Preuve photo ajoutée',d.code);save();render()};
   if(navigator.geolocation)navigator.geolocation.getCurrentPosition(p=>add(p.coords.latitude,p.coords.longitude),()=>add(null,null),{timeout:8000});else add(null,null)}});
+if('serviceWorker' in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('sw.js').catch(()=>{});
 init();
 })();

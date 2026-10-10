@@ -19,6 +19,14 @@ Mot de passe commun : `hsse2026`
 
 Parcours conseillé : Awa crée un document et le soumet, puis Moussa, Fatou et Ibrahima valident à tour de rôle, puis Cheikh signe la lecture.
 
+## Application mobile (PWA)
+
+Sur téléphone, ouvrir le lien puis « Ajouter à l'écran d'accueil » (Android : « Installer l'application »). L'application s'ouvre alors en plein écran et reste consultable sans connexion.
+
+## Exports
+
+L'onglet Documents propose la recherche, le filtre par statut, un export Excel (CSV) et l'impression en PDF.
+
 ## Lancer en local
 
 Ouvrir `index.html` dans un navigateur, ou : `npx serve .`
