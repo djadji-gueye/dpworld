@@ -19,6 +19,10 @@ Mot de passe commun : `hsse2026`
 
 Parcours conseillé : Awa crée un document et le soumet, puis Moussa, Fatou et Ibrahima valident à tour de rôle, puis Cheikh signe la lecture.
 
+## Administration
+
+Le compte Direction (ibrahima.ba@societe.sn) accède à l'onglet Administration : gestion des utilisateurs et des rôles, circuit de validation paramétrable (étapes et valideurs) et modèles de documents.
+
 ## Application mobile (PWA)
 
 Sur téléphone, ouvrir le lien puis « Ajouter à l'écran d'accueil » (Android : « Installer l'application »). L'application s'ouvre alors en plein écran et reste consultable sans connexion.
