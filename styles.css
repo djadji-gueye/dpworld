@@ -44,6 +44,10 @@ img.pf{width:104px;height:104px;object-fit:cover;border-radius:8px;border:1px so
 .login{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;background:linear-gradient(160deg,var(--nv),#12365F)}
 .login .card{width:100%;max-width:400px;padding:32px;margin:0}.login h1{margin-top:14px}.err{color:var(--rdT);font-size:13px;min-height:20px;margin:0 0 8px}
 #toast{position:fixed;right:20px;bottom:20px;background:var(--nv);color:#fff;padding:12px 18px;border-radius:10px;display:none;z-index:20;font-size:14px;max-width:calc(100% - 40px)}
+.lg2{display:flex;align-items:center;gap:8px;margin-bottom:8px;font-size:14px}.lg2 b{margin-left:auto}.sw{display:inline-block;width:12px;height:12px;border-radius:3px;flex:none}
+.bar-r{display:flex;align-items:center;gap:10px;margin-bottom:12px;font-size:14px}.bar-r>span{width:96px;flex:none}.bar-r>b{width:22px;text-align:right}
+.trk{flex:1;display:flex;height:14px;background:var(--dr);border-radius:7px;overflow:hidden}.trk i{display:block;height:100%}
+.fc{padding:12px;border:1px solid var(--bd);border-radius:8px;background:#F8FAFD;margin-bottom:12px}
 .sm{display:none}.top{display:none}
 .pill{min-height:36px;padding:0 14px;border-radius:18px;font-size:13px}
 .sheet{position:fixed;right:20px;bottom:20px;width:380px;max-width:calc(100% - 24px);z-index:30;background:#fff;border:1px solid var(--bd);border-radius:16px;padding:16px;box-shadow:0 12px 40px rgba(11,27,51,.22);animation:up .3s ease}

@@ -27,6 +27,10 @@ Le compte Direction (ibrahima.ba@societe.sn) accède à l'onglet Administration 
 
 Après la connexion, l'application propose son installation (bouton « Installer » sur Android et ordinateur, mode d'emploi en 3 étapes sur iPhone). Le bouton reste disponible dans l'en-tête sur mobile et dans le menu sur ordinateur. Une fois installée, elle s'ouvre en plein écran et reste consultable sans connexion.
 
+## Tableau de bord et import
+
+Le tableau de bord affiche la répartition des documents par statut et par service. À la création d'un document (ou pour une nouvelle version d'un brouillon), on peut importer un fichier existant (PDF, Word, Excel, image, texte ; 10 Mo max). L'empreinte SHA-256 du fichier est enregistrée et reprise dans la signature de lecture. Les fichiers sont conservés dans le navigateur de l'appareil (IndexedDB), comme le reste des données du prototype.
+
 ## Alertes
 
 Les échéances de validité (30 jours) et les signatures en retard (plus de 7 jours) génèrent automatiquement des notifications.
