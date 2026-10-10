@@ -48,6 +48,13 @@ img.pf{width:104px;height:104px;object-fit:cover;border-radius:8px;border:1px so
 .bar-r{display:flex;align-items:center;gap:10px;margin-bottom:12px;font-size:14px}.bar-r>span{width:96px;flex:none}.bar-r>b{width:22px;text-align:right}
 .trk{flex:1;display:flex;height:14px;background:var(--dr);border-radius:7px;overflow:hidden}.trk i{display:block;height:100%}
 .fc{padding:12px;border:1px solid var(--bd);border-radius:8px;background:#F8FAFD;margin-bottom:12px}
+.lbl{font-size:14px;font-weight:500;margin-bottom:5px}
+.tb{display:flex;gap:6px;overflow-x:auto;padding:8px;border:1px solid var(--bd);border-radius:8px 8px 0 0;background:#F8FAFD;-webkit-overflow-scrolling:touch}
+.tbb{flex:none;min-height:40px;padding:0 12px;font-size:13px;font-weight:500;background:#fff;color:var(--ink);border:1px solid var(--bd)}
+.ed{min-height:260px;border:1px solid var(--bd);border-top:0;border-radius:0 0 8px 8px;background:#fff;padding:16px;margin-bottom:12px}.ed:focus{outline:2px solid var(--ac);outline-offset:-2px}
+.doc.rich{white-space:normal}
+.rich h1{font-size:22px;margin:18px 0 8px}.rich h2{font-size:18px;margin:18px 0 6px}.rich h3{font-size:16px}.rich p{margin:0 0 10px}.rich ul,.rich ol{padding-left:22px;margin:0 0 10px}.rich a{color:var(--ac)}
+.rich table{border-collapse:collapse;width:100%;margin:10px 0;font-size:14px}.rich th,.rich td{border:1px solid #CBD5E1;padding:8px;text-align:left;vertical-align:top;min-width:60px}.rich th{background:var(--dr)}
 .sm{display:none}.top{display:none}
 .pill{min-height:36px;padding:0 14px;border-radius:18px;font-size:13px}
 .sheet{position:fixed;right:20px;bottom:20px;width:380px;max-width:calc(100% - 24px);z-index:30;background:#fff;border:1px solid var(--bd);border-radius:16px;padding:16px;box-shadow:0 12px 40px rgba(11,27,51,.22);animation:up .3s ease}

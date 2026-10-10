@@ -31,6 +31,10 @@ Après la connexion, l'application propose son installation (bouton « Installer
 
 Le tableau de bord affiche la répartition des documents par statut et par service. À la création d'un document (ou pour une nouvelle version d'un brouillon), on peut importer un fichier existant (PDF, Word, Excel, image, texte ; 10 Mo max). L'empreinte SHA-256 du fichier est enregistrée et reprise dans la signature de lecture. Les fichiers sont conservés dans le navigateur de l'appareil (IndexedDB), comme le reste des données du prototype.
 
+## Éditeur de documents
+
+Éditeur intégré (titres, gras, italique, listes, tableaux, liens, annuler/rétablir). Le contenu est nettoyé avant enregistrement et à l'affichage (liste blanche de balises), y compris lors d'un copier-coller. Chaque enregistrement crée une nouvelle version avec son empreinte SHA-256.
+
 ## Alertes
 
 Les échéances de validité (30 jours) et les signatures en retard (plus de 7 jours) génèrent automatiquement des notifications.
