@@ -1,0 +1,85 @@
+(()=>{
+const $=s=>document.querySelector(s),K='safedoc.v1',DAY=864e5;
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const hx=async t=>{try{if(crypto&&crypto.subtle)return[...new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(t)))].map(b=>b.toString(16).padStart(2,'0')).join('')}catch(e){}let h=5381,o='';for(let r=0;r<8;r++){for(let i=0;i<t.length;i++)h=((h*33)^(t.charCodeAt(i)+r))>>>0;o+=h.toString(16).padStart(8,'0')}return o};
+const D=n=>Date.now()+n*DAY,fd=d=>new Date(d).toLocaleDateString('fr-FR'),ft=d=>new Date(d).toLocaleString('fr-FR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'});
+const SV=['Exploitation','Maintenance','HSSE'],PX=['EXP','MNT','HSSE'],PW='hsse2026';
+const RL={REDACTEUR:'Rédacteur',VALIDEUR:'Valideur',HSSE:'Responsable HSSE',LECTEUR:'Lecteur',ADMIN:'Direction'};
+const U=[{id:1,name:'Awa Diop',email:'awa.diop@societe.sn',role:'REDACTEUR',svc:0,mgr:2},{id:2,name:'Moussa Fall',email:'moussa.fall@societe.sn',role:'VALIDEUR',svc:0,mgr:5},{id:3,name:'Fatou Sow',email:'fatou.sow@societe.sn',role:'HSSE',svc:2,mgr:5},{id:4,name:'Cheikh Ndiaye',email:'cheikh.ndiaye@societe.sn',role:'LECTEUR',svc:0,mgr:2},{id:5,name:'Ibrahima Ba',email:'ibrahima.ba@societe.sn',role:'ADMIN',svc:2,mgr:null},{id:6,name:'Mariama Sy',email:'mariama.sy@societe.sn',role:'LECTEUR',svc:1,mgr:5}];
+const un=id=>U.find(u=>u.id===id).name;
+const TPL={'Procédure':['Objet',"Domaine d'application",'Responsabilités','Description'],'Instruction de travail':['But','Matériel','Étapes','Sécurité'],'Formulaire':['Identification','Contrôles','Observations','Visa']};
+const SL={PUBLIE:['Publié','ok'],EN_VALIDATION:['En validation','bl'],BROUILLON:['Brouillon','dr']};
+const IC={docs:'<path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h6"/>',dash:'<rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/>',ntf:'<path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 0 1-3.4 0"/>',aud:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>'};
+const ico=(k,s=20)=>`<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IC[k]}</svg>`;
+const LOGO='<svg class="logo" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="8" fill="#0A7C70"/><path d="M10 7h8l5 5v13H10z" fill="none" stroke="#fff" stroke-width="2" stroke-linejoin="round"/><path d="M13 18l3 3 5-6" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+const flow=d=>[{t:'Validation hiérarchique',as:U.find(u=>u.id===d.author).mgr},{t:'Revue HSSE',as:3},{t:'Approbation finale',as:5}].map(s=>({...s,st:'EN_ATTENTE',cm:'',at:null}));
+const body=(t,k)=>TPL[t].map((s,i)=>(i+1)+'. '+s+'\n'+(k||'À compléter.')).join('\n\n');
+let S=null,view='docs',cur=null;
+const me=()=>S&&S.me?U.find(u=>u.id===S.me):null,lv=d=>d.versions[d.versions.length-1];
+const save=()=>{try{localStorage.setItem(K,JSON.stringify(S))}catch(e){toast('Espace de stockage local saturé')}};
+const log=(act,ent)=>S.aud.unshift({at:Date.now(),who:me().name,act,ent});
+const notify=(to,msg,i)=>{S.ntf.unshift({to,msg,at:Date.now(),i,r:0})};
+function toast(m){const t=$('#toast');t.textContent=m;t.style.display='block';clearTimeout(toast.k);toast.k=setTimeout(()=>t.style.display='none',3500)}
+const mk=async(code,title,svc,author,status,tp,valid)=>{const c=body(tp,'Contenu de référence.');const d={code,title,svc,author,status,tp,valid,versions:[{n:1,content:c,hash:await hx(c),at:D(-30)}],steps:[],sigs:[],proofs:[]};if(status!=='BROUILLON'){d.steps=flow(d);d.steps.forEach(s=>{s.st='VALIDE';s.at=D(-20)})}return d};
+async function init(){
+ try{S=JSON.parse(localStorage.getItem(K)||'null')}catch(e){S=null}
+ if(!S){const docs=[await mk('PRO-HSSE-001','Procédure de maîtrise documentaire',2,3,'PUBLIE','Procédure',D(200)),await mk('PRO-EXP-014','Consigne de travail en hauteur',0,1,'EN_VALIDATION','Instruction de travail',null),await mk('FOR-MNT-007',"Formulaire d'inspection des engins",1,1,'BROUILLON','Formulaire',null),await mk('PRO-EXP-009',"Plan d'évacuation du terminal",0,3,'PUBLIE','Procédure',D(20))];
+  const d=docs[1];d.steps.forEach(s=>{s.st='EN_ATTENTE';s.at=null});d.steps[0].st='VALIDE';d.steps[0].cm='Conforme à la pratique terrain.';d.steps[0].at=D(-2);d.steps[1].st='EN_COURS';
+  docs[3].sigs.push({u:2,v:1,at:D(-5),hash:docs[3].versions[0].hash});
+  S={me:null,docs,aud:[],ntf:[{to:3,msg:'Document à valider : Consigne de travail en hauteur',at:D(-2),i:1,r:0}]};save()}
+ render()}
+const bd=s=>`<span class="badge ${SL[s][1]}">${SL[s][0]}</span>`;
+const toSign=u=>S.docs.filter(d=>d.status==='PUBLIE'&&d.svc===u.svc&&!d.sigs.some(s=>s.u===u.id&&s.v===lv(d).n));
+const toVal=u=>S.docs.filter(d=>d.steps.some(s=>s.st==='EN_COURS'&&s.as===u.id));
+const unread=u=>S.ntf.filter(n=>n.to===u.id&&!n.r).length;
+function list(m){return `<div class="row sp" style="margin-bottom:6px"><div><h1>Documents</h1><p class="sub">Maîtrise des informations documentées</p></div>${m.role==='REDACTEUR'||m.role==='ADMIN'?'<button data-a="new">Nouveau document</button>':''}</div><div class="card sc"><table><thead><tr><th>Code</th><th>Titre</th><th>Version</th><th>Statut</th><th>Service</th><th>Validité</th></tr></thead><tbody>${S.docs.map((d,i)=>`<tr data-a="open" data-i="${i}"><td><b>${d.code}</b></td><td>${esc(d.title)}</td><td>v${lv(d).n}</td><td>${bd(d.status)}</td><td>${SV[d.svc]}</td><td>${d.valid?fd(d.valid):'—'}</td></tr>`).join('')}</tbody></table></div>`}
+function dash(m){const sg=toSign(m),vl=toVal(m),ex=S.docs.filter(d=>d.status==='PUBLIE'&&d.valid&&d.valid<D(30));
+ const rows=[...vl.map(d=>[d,'À valider','wa']),...sg.map(d=>[d,'À signer','bl'])];
+ const kp=(l,n,c)=>`<div class="card kp"><div class="chip ${c}">${ico('docs',22)}</div><div><div class="mut">${l}</div><div class="kpi">${n}</div></div></div>`;
+ return `<h1>Bonjour, ${esc(m.name.split(' ')[0])}</h1><p class="sub">${RL[m.role]} · ${SV[m.svc]}</p><div class="grid">${kp('À valider',vl.length,'wa')}${kp('À lire et signer',sg.length,'bl')}${kp('Validités à 30 jours',ex.length,'rd')}</div>
+ <div class="grid"><div class="card sc"><h2>Mes tâches</h2>${rows.length?`<table><tbody>${rows.map(([d,l,c])=>`<tr data-a="open" data-i="${S.docs.indexOf(d)}"><td>${esc(d.title)}<div class="mut">${d.code}</div></td><td><span class="badge ${c}">${l}</span></td></tr>`).join('')}</tbody></table>`:'<p class="mut">Aucune tâche en attente.</p>'}</div>
+ <div class="card"><h2>Signatures par service</h2>${SV.map((s,i)=>{const pub=S.docs.filter(d=>d.status==='PUBLIE'&&d.svc===i),n=U.filter(u=>u.svc===i).length*pub.length,k=pub.reduce((a,d)=>a+d.sigs.filter(x=>x.v===lv(d).n).length,0);return `<div class="row sp"><span>${s}</span><span class="mut">${k} / ${n}</span></div><progress value="${k}" max="${n||1}" aria-label="${s}"></progress><br><br>`}).join('')}</div></div>`}
+function ntfv(m){const l=S.ntf.map((n,i)=>[n,i]).filter(([n])=>n.to===m.id);return `<h1>Notifications</h1><p class="sub">Alertes liées à vos documents</p><div class="card">${l.length?l.map(([n,i])=>`<div class="nt ${n.r?'':'u'}" data-a="nopen" data-n="${i}"><span class="d"></span><div><div>${esc(n.msg)}</div><div class="mut">${ft(n.at)}</div></div></div>`).join(''):'<p class="mut">Aucune notification.</p>'}</div>`}
+function audit(){return `<h1>Journal d'audit</h1><p class="sub">Historique des actions, en ajout seul</p><div class="card sc"><table><thead><tr><th>Date</th><th>Utilisateur</th><th>Action</th><th>Document</th></tr></thead><tbody>${S.aud.length?S.aud.map(a=>`<tr><td>${ft(a.at)}</td><td>${esc(a.who)}</td><td>${esc(a.act)}</td><td>${esc(a.ent)}</td></tr>`).join(''):'<tr><td colspan="4" class="mut">Aucune action enregistrée.</td></tr>'}</tbody></table></div><p><button class="lnk" style="color:var(--mut)" data-a="reset">Réinitialiser les données de l'espace</button></p>`}
+function form(m){return `<h1>Nouveau document</h1><p class="sub">Le document est créé en brouillon (version 1)</p><div class="card"><label>Titre<input id="nt"></label><label>Modèle<select id="nm">${Object.keys(TPL).map(t=>`<option>${t}</option>`).join('')}</select></label><label>Service<select id="ns">${SV.map((s,i)=>`<option value="${i}"${i===m.svc?' selected':''}>${s}</option>`).join('')}</select></label><label>Contenu<textarea id="nc">${body('Procédure')}</textarea></label><div class="row"><button data-a="create">Créer le brouillon</button><button class="sec" data-a="go" data-v="docs">Annuler</button></div></div>`}
+function detail(d,m){const v=lv(d),cs=d.steps.find(s=>s.st==='EN_COURS'),mine=cs&&cs.as===m.id,mySig=d.sigs.find(s=>s.u===m.id&&s.v===v.n),can=d.status==='PUBLIE'&&d.svc===m.svc&&!mySig,ed=d.status==='BROUILLON'&&(d.author===m.id||m.role==='ADMIN');
+ const st=[{t:'Soumission',st:d.status==='BROUILLON'?'EN_ATTENTE':'VALIDE',w:un(d.author)}].concat(d.steps.length?d.steps.map(s=>({t:s.t,st:s.st,w:un(s.as),c:s.cm})):['Validation hiérarchique','Revue HSSE','Approbation finale'].map(t=>({t,st:'EN_ATTENTE'})));
+ const ns=d.sigs.filter(s=>s.v===v.n).length,el=U.filter(u=>u.svc===d.svc).length;
+ return `<p><button class="sec" data-a="go" data-v="docs">← Retour</button></p><h1>${esc(d.title)}</h1><p class="sub">${d.code} · version ${v.n} · ${SV[d.svc]} · ${bd(d.status)}${d.valid?' · valide jusqu\'au '+fd(d.valid):''}</p>
+ <div class="card"><h2>Circuit de validation</h2><div class="steps">${st.map((s,i)=>`<div class="step"><div class="dot ${s.st}">${s.st==='VALIDE'?'✓':i+1}</div><b>${s.t}</b>${s.w?esc(s.w):''}${s.c?`<div class="mut">« ${esc(s.c)} »</div>`:''}</div>`).join('')}</div>
+ ${d.status==='BROUILLON'&&ed?'<p><button data-a="submit">Soumettre à la validation</button></p>':''}
+ ${mine?`<hr style="border:0;border-top:1px solid var(--bd);margin:18px 0"><label>Commentaire<textarea id="cm" style="min-height:80px"></textarea></label><div class="row"><button data-a="ok">Valider</button><button class="dng" data-a="ko">Rejeter</button></div>`:''}</div>
+ <div class="card"><h2>Contenu · version ${v.n}</h2>${ed?`<textarea id="ct">${esc(v.content)}</textarea><p><button class="sec" data-a="ver">Enregistrer une nouvelle version</button></p>`:`<div class="doc">${esc(v.content)}</div>`}<p class="mut">Empreinte SHA-256 : <code>${v.hash.slice(0,16)}…</code> · versions : ${d.versions.map(x=>'v'+x.n).join(', ')}</p></div>
+ ${d.status==='PUBLIE'?`<div class="card"><h2>Signature de lecture</h2>${mySig?`<p>Signé le ${ft(mySig.at)} · empreinte <code>${mySig.hash.slice(0,12)}…</code></p>`:can?`<label><input type="checkbox" id="rd">J'ai lu et compris ce document</label><p><button data-a="sign">Signer</button></p>`:'<p class="mut">Ce document ne concerne pas votre service.</p>'}<p class="mut">${ns} signature(s) sur ${el} personne(s) du service.</p></div>`:''}
+ <div class="card"><h2>Preuves photos</h2><div class="row">${d.proofs.map(p=>`<div><img class="pf" src="${p.url}" alt="Photo de preuve"><div class="mut">${p.lat!=null?p.lat.toFixed(4)+', '+p.lng.toFixed(4):'Position indisponible'}<br>${ft(p.at)}</div></div>`).join('')||'<span class="mut">Aucune preuve jointe.</span>'}</div><p><label class="btn sec" style="display:inline-flex;align-items:center">Joindre une photo<input id="pf" type="file" accept="image/*" capture="environment" hidden></label></p></div>`}
+function render(){const a=$('#app'),m=me();
+ if(!m){a.innerHTML=`<div class="login"><form class="card" id="lf">${LOGO.replace('class="logo"','class="logo" style="width:48px;height:48px"')}<h1>SafeDoc</h1><p class="sub">Maîtrise documentaire HSSE</p><label>Adresse email<input id="em" type="email" autocomplete="username" required></label><label>Mot de passe<input id="pw" type="password" autocomplete="current-password" required></label><p class="err" id="err" role="alert"></p><button style="width:100%">Se connecter</button></form></div>`;return}
+ const n=unread(m),main=view==='docs'?list(m):view==='dash'?dash(m):view==='ntf'?ntfv(m):view==='aud'?audit():view==='new'?form(m):detail(S.docs[cur],m);
+ const nav=[['docs','Documents'],['dash','Tableau de bord'],['ntf','Notifications'],['aud','Journal']].map(([k,l])=>`<button class="nv${view===k||(k==='docs'&&(view==='doc'||view==='new'))?' on':''}" data-a="go" data-v="${k}">${ico(k)}<span>${l}</span>${k==='ntf'&&n?`<span class="cnt">${n}</span>`:''}</button>`).join('');
+ a.innerHTML=`<div class="app"><aside class="sb"><div class="brand">${LOGO}<div><b>SafeDoc</b><span>Maîtrise documentaire</span></div></div><nav>${nav}</nav><div class="usr"><div class="av">${m.name.split(' ').map(x=>x[0]).join('')}</div><div><b>${esc(m.name)}</b><span>${RL[m.role]}</span></div><button class="lnk" data-a="out">Quitter</button></div></aside><main><div class="top"><span class="mut">${esc(m.name)} · ${RL[m.role]}</span><button class="lnk" data-a="out">Déconnexion</button></div>${main}</main></div>`;window.scrollTo(0,0)}
+document.addEventListener('submit',e=>{e.preventDefault();const u=U.find(x=>x.email===$('#em').value.trim().toLowerCase());if(!u||$('#pw').value!==PW){$('#err').textContent='Identifiant ou mot de passe incorrect.';return}S.me=u.id;view='dash';save();render()});
+document.addEventListener('click',async e=>{const b=e.target.closest('[data-a]');if(!b||!S)return;const a=b.dataset.a,m=me(),d=S.docs[cur];
+ if(a==='reset'){try{localStorage.removeItem(K)}catch(x){}await init();return}
+ if(a==='out')S.me=null;
+ else if(a==='go')view=b.dataset.v;
+ else if(a==='new')view='new';
+ else if(a==='open'){cur=+b.dataset.i;view='doc'}
+ else if(a==='nopen'){const n=S.ntf[+b.dataset.n];n.r=1;cur=n.i;view='doc'}
+ else if(a==='create'){const t=$('#nt').value.trim();if(!t){toast('Saisissez un titre');return}const tp=$('#nm').value,s=+$('#ns').value,c=$('#nc').value;
+  S.docs.push({code:({'Procédure':'PRO','Instruction de travail':'INS','Formulaire':'FOR'})[tp]+'-'+PX[s]+'-'+String(S.docs.length+10).padStart(3,'0'),title:t,svc:s,author:m.id,status:'BROUILLON',tp,valid:null,versions:[{n:1,content:c,hash:await hx(c),at:Date.now()}],steps:[],sigs:[],proofs:[]});
+  cur=S.docs.length-1;log('Création du brouillon v1',S.docs[cur].code);view='doc'}
+ else if(a==='ver'){const c=$('#ct').value;d.versions.push({n:lv(d).n+1,content:c,hash:await hx(c),at:Date.now()});log('Nouvelle version v'+lv(d).n,d.code);toast('Version '+lv(d).n+' enregistrée')}
+ else if(a==='submit'){d.steps=flow(d);d.steps[0].st='EN_COURS';d.status='EN_VALIDATION';log('Soumission à la validation',d.code);notify(d.steps[0].as,'Document à valider : '+d.title,cur);toast('Notification envoyée à '+un(d.steps[0].as))}
+ else if(a==='ok'||a==='ko'){const i=d.steps.findIndex(s=>s.st==='EN_COURS'),s=d.steps[i];s.cm=$('#cm').value.trim();s.at=Date.now();
+  if(a==='ko'){if(!s.cm){toast('Un commentaire est obligatoire pour rejeter');return}d.steps=[];d.status='BROUILLON';log('Rejet : '+s.cm,d.code);notify(d.author,'Document rejeté : '+d.title,cur);toast('Notification envoyée à '+un(d.author))}
+  else{s.st='VALIDE';log('Validation : '+s.t,d.code);const n=d.steps[i+1];if(n){n.st='EN_COURS';notify(n.as,'Document à valider : '+d.title,cur);toast('Notification envoyée à '+un(n.as))}else{d.status='PUBLIE';d.valid=D(365);log('Publication',d.code);U.filter(u=>u.svc===d.svc).forEach(u=>notify(u.id,'Nouveau document à lire et signer : '+d.title,cur));toast('Document publié')}}}
+ else if(a==='sign'){if(!$('#rd').checked){toast('Cochez la confirmation de lecture');return}const v=lv(d);d.sigs.push({u:m.id,v:v.n,at:Date.now(),hash:v.hash});log('Signature de lecture v'+v.n,d.code);toast('Signature horodatée enregistrée')}
+ save();render()});
+const shrink=f=>new Promise(r=>{const im=new Image,u=URL.createObjectURL(f);im.onload=()=>{const k=Math.min(1,640/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=im.width*k;c.height=im.height*k;c.getContext('2d').drawImage(im,0,0,c.width,c.height);URL.revokeObjectURL(u);r(c.toDataURL('image/jpeg',.7))};im.onerror=()=>r(null);im.src=u});
+document.addEventListener('change',async e=>{
+ if(e.target.id==='nm')$('#nc').value=body(e.target.value);
+ if(e.target.id==='pf'&&e.target.files[0]){const url=await shrink(e.target.files[0]),d=S.docs[cur];if(!url){toast("Image illisible");return}
+  const add=(la,ln)=>{d.proofs.push({url,lat:la,lng:ln,at:Date.now()});log('Preuve photo ajoutée',d.code);save();render()};
+  if(navigator.geolocation)navigator.geolocation.getCurrentPosition(p=>add(p.coords.latitude,p.coords.longitude),()=>add(null,null),{timeout:8000});else add(null,null)}});
+init();
+})();

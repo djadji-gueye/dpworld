@@ -1,0 +1,47 @@
+# SafeDoc — Maîtrise documentaire HSSE (prototype interactif)
+
+Prototype interactif d'une application de gestion documentaire HSSE : création de documents, versionnage, circuit de validation en 4 étapes, signature de lecture, preuves photos géolocalisées, notifications, tableau de bord et journal d'audit.
+
+Site statique (HTML, CSS, JavaScript), sans build ni dépendance. Les données sont enregistrées dans le navigateur de chaque visiteur (localStorage).
+
+## Comptes
+
+Mot de passe commun : `hsse2026`
+
+| Email | Rôle |
+|---|---|
+| awa.diop@societe.sn | Rédacteur (Exploitation) |
+| moussa.fall@societe.sn | Valideur, supérieur d'Awa |
+| fatou.sow@societe.sn | Responsable HSSE |
+| ibrahima.ba@societe.sn | Direction (approbation finale) |
+| cheikh.ndiaye@societe.sn | Lecteur (Exploitation) |
+| mariama.sy@societe.sn | Lecteur (Maintenance) |
+
+Parcours conseillé : Awa crée un document et le soumet, puis Moussa, Fatou et Ibrahima valident à tour de rôle, puis Cheikh signe la lecture.
+
+## Lancer en local
+
+Ouvrir `index.html` dans un navigateur, ou : `npx serve .`
+
+## Publier sur GitHub
+
+```bash
+git init
+git add .
+git commit -m "Prototype SafeDoc"
+git branch -M main
+git remote add origin https://github.com/<utilisateur>/safedoc.git
+git push -u origin main
+```
+
+## Déployer sur Vercel
+
+1. Sur vercel.com, **Add New → Project**, puis importer le dépôt GitHub.
+2. **Framework Preset : Other**. Laisser vides la commande de build et le dossier de sortie.
+3. **Deploy**. Chaque `git push` redéploie automatiquement.
+
+## Limites du prototype
+
+- Pas de serveur ni de base de données : les données restent dans le navigateur. Bouton « Réinitialiser » dans l'onglet Journal.
+- La connexion est une simple vérification côté navigateur : ne pas y saisir de données réelles ou confidentielles.
+- Les notifications sont internes à l'application. Les emails, la connexion avec les comptes de l'entreprise (SSO), la signature certifiée et les exports PDF/Excel ne font pas partie du prototype.
