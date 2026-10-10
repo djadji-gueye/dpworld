@@ -25,7 +25,11 @@ Le compte Direction (ibrahima.ba@societe.sn) accède à l'onglet Administration 
 
 ## Application mobile (PWA)
 
-Sur téléphone, ouvrir le lien puis « Ajouter à l'écran d'accueil » (Android : « Installer l'application »). L'application s'ouvre alors en plein écran et reste consultable sans connexion.
+Après la connexion, l'application propose son installation (bouton « Installer » sur Android et ordinateur, mode d'emploi en 3 étapes sur iPhone). Le bouton reste disponible dans l'en-tête sur mobile et dans le menu sur ordinateur. Une fois installée, elle s'ouvre en plein écran et reste consultable sans connexion.
+
+## Alertes
+
+Les échéances de validité (30 jours) et les signatures en retard (plus de 7 jours) génèrent automatiquement des notifications.
 
 ## Exports
 
