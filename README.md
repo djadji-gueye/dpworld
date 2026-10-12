@@ -35,6 +35,11 @@ Le tableau de bord affiche la répartition des documents par statut et par servi
 
 Éditeur intégré (titres, gras, italique, listes, tableaux, liens, annuler/rétablir). Le contenu est nettoyé avant enregistrement et à l'affichage (liste blanche de balises), y compris lors d'un copier-coller. Chaque enregistrement crée une nouvelle version avec son empreinte SHA-256.
 
+## Visualisation, commentaires et historique
+
+Bouton « Visualiser » sur chaque document : lecteur plein écran (PDF, images, documents de l'éditeur ; Word et Excel via mammoth.js et SheetJS chargés à la demande). Filigrane « Copie contrôlée » (nom de l'utilisateur et date) sur les documents publiés, « Document non applicable » sinon, y compris à l'impression. Chaque consultation est tracée dans le journal.
+La fiche d'un document affiche l'historique du workflow par cycle (soumission, validations, rejets, publication, signatures, commentaires, délais par étape), les commentaires de décision et une bannière de rejet pour l'auteur. Les notifications de rejet et de validation reprennent un extrait du commentaire.
+
 ## Alertes
 
 Les échéances de validité (30 jours) et les signatures en retard (plus de 7 jours) génèrent automatiquement des notifications.
