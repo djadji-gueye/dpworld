@@ -37,7 +37,7 @@ const bd=s=>`<span class="badge ${SL[s][1]}">${SL[s][0]}</span>`;
 const toSign=u=>S.docs.filter(d=>d.status==='PUBLIE'&&d.svc===u.svc&&!d.sigs.some(s=>s.u===u.id&&s.v===lv(d).n));
 const toVal=u=>S.docs.filter(d=>d.steps.some(s=>s.st==='EN_COURS'&&s.as===u.id));
 const unread=u=>S.ntf.filter(n=>n.to===u.id&&!n.r).length;
-const EXT=['pdf','doc','docx','xls','xlsx','png','jpg','jpeg','txt','md'],ACC=EXT.map(x=>'.'+x).join(',');
+const EXT=['pdf','doc','docx','xls','xlsx','png','jpg','jpeg','gif','webp','txt','md'],ACC=EXT.map(x=>'.'+x).join(',');
 const sz=n=>n>1048576?(n/1048576).toFixed(1)+' Mo':Math.max(1,Math.round(n/1024))+' Ko';
 const hex=b=>[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('');
 const hxb=async b=>{try{if(crypto&&crypto.subtle)return hex(await crypto.subtle.digest('SHA-256',b))}catch(e){}const u=new Uint8Array(b);let h=5381,o='';for(let r=0;r<8;r++){for(let i=0;i<u.length;i++)h=((h*33)^(u[i]+r))>>>0;o+=h.toString(16).padStart(8,'0')}return o};
@@ -50,7 +50,8 @@ async function mkVer(n,content,f){if(!f)return{n,content,hash:await hx(content),
  const buf=await readBuf(f);if(ex==='txt'||ex==='md'){const t=t2h(new TextDecoder().decode(buf));return{n,content:t,hash:await hx(t),at:Date.now(),rich:true}}
  const id='f'+Date.now().toString(36)+Math.random().toString(36).slice(2,6);try{await fput(id,{buf,type:f.type||'application/octet-stream'})}catch(e){throw new Error("Impossible d'enregistrer le fichier sur cet appareil")}
  return{n,content:'Document importé : '+f.name,hash:await hxb(buf),at:Date.now(),file:{id,name:f.name,size:f.size,type:f.type}}}
-const fileCard=v=>`<div class="row sp fc"><div><b>${esc(v.file.name)}</b><div class="mut">${sz(v.file.size)}</div></div><div class="row"><button class="sec" data-a="fopen" data-id="${v.file.id}">Ouvrir</button><button class="sec" data-a="fdl" data-id="${v.file.id}" data-n="${esc(v.file.name)}">Télécharger</button></div></div>`;
+const isImg=n=>/\.(png|jpe?g|gif|webp)$/i.test(n);
+const fileCard=v=>`<div><div class="row sp fc"><div><b>${esc(v.file.name)}</b><div class="mut">${sz(v.file.size)}</div></div><div class="row"><button class="sec" data-a="fopen" data-id="${v.file.id}">Ouvrir</button><button class="sec" data-a="fdl" data-id="${v.file.id}" data-n="${esc(v.file.name)}">Télécharger</button></div></div>${isImg(v.file.name)?`<img class="th" data-th="${v.file.id}" data-a="view" alt="Aperçu de ${esc(v.file.name)}" title="Cliquer pour agrandir">`:''}</div>`;
 const IMP=`<p><label class="btn sec" style="display:inline-flex;align-items:center">Importer un fichier (nouvelle version)<input id="vf" type="file" accept="${ACC}" hidden></label></p>`;
 function charts(){const cs={PUBLIE:0,EN_VALIDATION:0,BROUILLON:0};S.docs.forEach(d=>cs[d.status]++);const tot=S.docs.length,C={PUBLIE:'#0A7C70',EN_VALIDATION:'#2F6FE4',BROUILLON:'#94A3B8'},R=42,CI=2*Math.PI*R;let off=0;
  const segs=Object.keys(cs).filter(k=>cs[k]).map(k=>{const l=cs[k]/tot*CI,s=`<circle cx="60" cy="60" r="${R}" fill="none" stroke="${C[k]}" stroke-width="16" stroke-dasharray="${l} ${CI-l}" stroke-dashoffset="${-off}" transform="rotate(-90 60 60)"/>`;off+=l;return s}).join('');
@@ -159,9 +160,10 @@ document.addEventListener('click',async e=>{const b=e.target.closest('[data-a]')
  if(a==='view'){const v=lv(d),f=v.file,NA='<p class="mut">Aperçu non disponible pour ce format : utilisez Télécharger.</p>';let h;
   if(f){let r=null;try{r=await fget(f.id)}catch(x){}if(!r){toast('Fichier introuvable sur cet appareil');return}const x=f.name.split('.').pop().toLowerCase(),u=URL.createObjectURL(new Blob([r.buf],{type:r.type}));
    if(x==='pdf')h='<iframe class="vf" src="'+u+'" title="'+esc(f.name)+'"></iframe>';
-   else if(/^(png|jpe?g)$/.test(x))h='<img class="vi" src="'+u+'" alt="'+esc(f.name)+'">';
+   else if(/^(png|jpe?g|gif|webp)$/.test(x))h='<img class="vi" src="'+u+'" alt="'+esc(f.name)+'">';
    else if(x==='docx'){try{await lib('https://cdn.jsdelivr.net/npm/mammoth@1.6.0/mammoth.browser.min.js','mammoth');h='<div class="rich">'+clean((await mammoth.convertToHtml({arrayBuffer:r.buf})).value)+'</div>'}catch(e){h=NA}}
    else if(x==='xlsx'||x==='xls'){try{await lib('https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js','XLSX');const w=XLSX.read(r.buf);h='<div class="rich">'+w.SheetNames.map(n=>'<h2>'+esc(n)+'</h2>'+clean(XLSX.utils.sheet_to_html(w.Sheets[n]))).join('')+'</div>'}catch(e){h=NA}}
+   else if(x==='txt'||x==='md')h='<pre class="rich" style="white-space:pre-wrap">'+esc(new TextDecoder().decode(r.buf))+'</pre>';
    else h=NA}
   else h='<div class="rich">'+clean(html(v))+'</div>';
   openV(d,v,h);return}
@@ -215,5 +217,7 @@ document.addEventListener('change',async e=>{
   if(navigator.geolocation)navigator.geolocation.getCurrentPosition(p=>add(p.coords.latitude,p.coords.longitude),()=>add(null,null),{timeout:8000});else add(null,null)}});
 if('serviceWorker' in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('sw.js').catch(()=>{});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&document.body.classList.contains('vo'))closeV()});
+async function th(){for(const i of document.querySelectorAll('img[data-th]')){if(i.getAttribute('src'))continue;try{const r=await fget(i.dataset.th);if(r)i.src=URL.createObjectURL(new Blob([r.buf],{type:r.type}))}catch(e){}}}
+new MutationObserver(th).observe(document.getElementById('app'),{childList:true,subtree:true});
 init();
 })();

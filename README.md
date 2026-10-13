@@ -48,6 +48,10 @@ Le valideur d'une étape peut la déléguer à un autre utilisateur (tracé dans
 
 L'onglet « Guide » reprend les comptes de test, les 17 scénarios et la fiche de retour. Les testeurs cochent OK / À améliorer / Ne fonctionne pas, saisissent leurs remarques et exportent le tout en Excel (les retours restent dans leur navigateur).
 
+## Aperçu des images
+
+Les images importées (PNG, JPEG, GIF, WebP) s'affichent directement sous la fiche du fichier ; un clic les ouvre en grand dans le lecteur. Les fichiers texte (.txt, .md) sont aussi visualisables.
+
 ## Alertes
 
 Les échéances de validité (30 jours) et les signatures en retard (plus de 7 jours) génèrent automatiquement des notifications.
