@@ -104,3 +104,22 @@ h1{font-size:21px}.grid{gap:12px}
 .df{margin:0 0 4px;padding:3px 8px;border-radius:4px}.df.a{background:var(--ok);color:var(--okT)}.df.r{background:var(--rd);color:var(--rdT);text-decoration:line-through}.tl.wa::before{background:#F59E0B}
 .fbb.on{background:var(--ac);color:#fff;border-color:var(--ac)}.card ol{padding-left:20px;margin:6px 0 10px}.card ol li{margin-bottom:4px}
 .th{display:block;max-width:100%;max-height:340px;margin:10px 0 4px;border:1px solid var(--bd);border-radius:8px;cursor:zoom-in;object-fit:contain;background:#F8FAFD}
+.pf{cursor:zoom-in}
+
+img.pf{cursor:zoom-in;transition:transform .15s,box-shadow .15s}img.pf:hover{transform:scale(1.04);box-shadow:0 4px 14px rgba(15,30,60,.25)}
+/* Popup photo */
+.lo{overflow:hidden}
+#lightbox:empty{display:none}
+.lb{position:fixed;inset:0;z-index:80;background:rgba(5,12,24,.93);display:flex;flex-direction:column;animation:lbin .15s ease-out}
+@keyframes lbin{from{opacity:0}to{opacity:1}}
+.lb-top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding:10px 16px;padding-top:calc(10px + env(safe-area-inset-top,0px));color:#fff}
+.lb-n{font-size:14px;opacity:.85}
+.lb-b{display:inline-flex;align-items:center;font:inherit;font-weight:600;font-size:14px;min-height:44px;padding:0 16px;border-radius:8px;border:1px solid rgba(255,255,255,.35);background:rgba(255,255,255,.1);color:#fff;text-decoration:none;cursor:pointer}
+.lb-b:hover{background:rgba(255,255,255,.2);filter:none}
+.lb-stage{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;position:relative;overflow:auto;padding:8px}
+.lb-img{max-width:100%;max-height:100%;object-fit:contain;border-radius:4px;cursor:zoom-in;box-shadow:0 10px 40px rgba(0,0,0,.5)}
+.lb-img.z{max-width:none;max-height:none;width:auto;cursor:zoom-out;margin:auto}
+.lb-nav{position:fixed;top:50%;transform:translateY(-50%);width:48px;height:64px;padding:0;font-size:34px;line-height:1;border-radius:10px;border:0;background:rgba(255,255,255,.14);color:#fff;z-index:2}
+.lb-nav.l{left:10px}.lb-nav.r{right:10px}.lb-nav:hover{background:rgba(255,255,255,.28);filter:none}
+.lb-cap{color:#fff;font-size:13px;text-align:center;padding:10px 16px;padding-bottom:calc(10px + env(safe-area-inset-bottom,0px));opacity:.9}.lb-cap a{color:#7FE0D3}
+@media print{#lightbox{display:none!important}}
