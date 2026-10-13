@@ -44,6 +44,10 @@ La fiche d'un document affiche l'historique du workflow par cycle (soumission, v
 
 Le valideur d'une étape peut la déléguer à un autre utilisateur (tracé dans l'historique, notification au délégué). Le bouton « Comparer » met en évidence les ajouts et suppressions entre la dernière version et la précédente. L'onglet Lecture (Responsable HSSE et Direction) liste, par document publié, qui a signé la version en vigueur, avec export Excel.
 
+## Guide de test intégré
+
+L'onglet « Guide » reprend les comptes de test, les 17 scénarios et la fiche de retour. Les testeurs cochent OK / À améliorer / Ne fonctionne pas, saisissent leurs remarques et exportent le tout en Excel (les retours restent dans leur navigateur).
+
 ## Alertes
 
 Les échéances de validité (30 jours) et les signatures en retard (plus de 7 jours) génèrent automatiquement des notifications.
