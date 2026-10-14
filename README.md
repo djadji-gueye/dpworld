@@ -1,6 +1,6 @@
 # SafeDoc — Maîtrise documentaire HSSE (prototype interactif)
 
-Prototype interactif d'une application de gestion documentaire HSSE : création de documents, versionnage, circuit de validation en 4 étapes, signature de lecture, preuves photos géolocalisées, notifications, tableau de bord et journal d'audit.
+Prototype interactif d'une application de gestion documentaire HSSE : création de documents avec métadonnées, versionnage avec nature des changements, circuit de validation en 4 étapes, signature de lecture, évidences (photos géolocalisées, rapports, comptes-rendus, justificatifs), notifications et courriels simulés, tableau de bord avec indicateurs de performance, journal d'audit, et page de conformité au cahier des charges.
 
 Site statique (HTML, CSS, JavaScript), sans build ni dépendance. Les données sont enregistrées dans le navigateur de chaque visiteur (localStorage).
 
@@ -25,7 +25,27 @@ Le compte Direction (ibrahima.ba@societe.sn) accède à l'onglet Administration 
 
 ## Application mobile (PWA)
 
-Après la connexion, l'application propose son installation (bouton « Installer » sur Android et ordinateur, mode d'emploi en 3 étapes sur iPhone). Le bouton reste disponible dans l'en-tête sur mobile et dans le menu sur ordinateur. Une fois installée, elle s'ouvre en plein écran et reste consultable sans connexion.
+Après la connexion, l'application propose son installation (bouton « Installer » sur Android et ordinateur, mode d'emploi en 3 étapes sur iPhone). Le bouton reste disponible dans l'en-tête sur mobile et dans le menu sur ordinateur. Une fois installée, elle s'ouvre en plein écran. Après une première ouverture avec connexion, elle se rouvre hors ligne (service worker) avec les données de l'appareil ; les exports Excel et la visualisation Word ou Excel demandent une connexion.
+
+## Métadonnées et nature des changements
+
+À la création, on renseigne le propriétaire, la confidentialité (Interne, Restreint, Confidentiel) et des mots-clés ; la fiche affiche la carte Métadonnées (code, type, service, propriétaire, auteur, confidentialité, mots-clés, dates de création et d'émission, version en vigueur, validité). La recherche couvre le code, le titre et les mots-clés. Toute nouvelle version exige une description de la nature des changements ; la carte « Versions et nature des changements » liste date, auteur, description et empreinte de chaque version. Les codes de documents sont uniques.
+
+## Courriels (simulés)
+
+Chaque notification produit le courriel prévu, visible dans l'onglet Courriels (chacun voit les siens, la Direction voit tous les courriels). Aucun message n'est réellement envoyé : en production, l'envoi passe par le serveur de messagerie de DP World.
+
+## Évidences et communications
+
+Une fiche regroupe les photos géolocalisées et des pièces typées (rapport d'intervention, compte-rendu de réunion, document justificatif ; 10 Mo max), horodatées, avec empreinte SHA-256, ouvrables et téléchargeables. La carte Communications permet d'écrire à un service ou à une personne à propos d'un document, et liste l'historique des messages et des courriels liés.
+
+## Indicateurs de performance
+
+Pour le Responsable HSSE et la Direction, le tableau de bord affiche le taux de signature, le délai moyen de validation, les signatures en retard, le taux de rejet, les documents tracés et ceux qui ont des évidences. Le bouton « Relancer les retardataires » envoie un rappel (alerte et courriel) à chaque signataire en retard. Les indicateurs sont calculés sur les données du navigateur.
+
+## Conformité et architecture
+
+L'onglet Conformité présente la couverture du cahier des charges (démontré, simulé), chaque ligne renvoyant à un scénario du guide, l'architecture cible, la sécurité en production, les limites du prototype et les étapes de passage en production.
 
 ## Tableau de bord et import
 
@@ -46,7 +66,7 @@ Le valideur d'une étape peut la déléguer à un autre utilisateur (tracé dans
 
 ## Guide de test intégré
 
-L'onglet « Guide » reprend les comptes de test, les 17 scénarios et la fiche de retour. Les testeurs cochent OK / À améliorer / Ne fonctionne pas, saisissent leurs remarques et exportent le tout en Excel (les retours restent dans leur navigateur).
+L'onglet « Guide » reprend les comptes de test, les 23 scénarios et la fiche de retour. Les testeurs cochent OK / À améliorer / Ne fonctionne pas, saisissent leurs remarques et exportent le tout en Excel (les retours restent dans leur navigateur).
 
 ## Aperçu des images
 
@@ -58,7 +78,7 @@ Les échéances de validité (30 jours) et les signatures en retard (plus de 7 j
 
 ## Exports
 
-L'onglet Documents propose la recherche, le filtre par statut, un export Excel (CSV) et l'impression en PDF.
+L'onglet Documents propose la recherche, le filtre par statut, un export Excel (.xlsx, ou CSV hors connexion) et l'impression en PDF. Les exports Excel sont aussi disponibles pour le rapport de lecture et les indicateurs.
 
 ## Lancer en local
 
@@ -85,4 +105,4 @@ git push -u origin main
 
 - Pas de serveur ni de base de données : les données restent dans le navigateur. Bouton « Réinitialiser » dans l'onglet Journal.
 - La connexion est une simple vérification côté navigateur : ne pas y saisir de données réelles ou confidentielles.
-- Les notifications sont internes à l'application. Les emails, la connexion avec les comptes de l'entreprise (SSO), la signature certifiée et les exports PDF/Excel ne font pas partie du prototype.
+- Les notifications sont internes à l'application et les courriels sont simulés (aucun envoi réel). La connexion avec les comptes de l'entreprise (SSO), la signature certifiée, les rappels planifiés côté serveur, le partage de données entre utilisateurs et les rapports PDF générés côté serveur ne font pas partie du prototype.
