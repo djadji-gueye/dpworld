@@ -14,7 +14,7 @@
 
 **19 · Courriels de notification (simulés)** (Awa Diop, Moussa Fall, Ibrahima Ba) : après une soumission, Moussa ouvre l'onglet Courriels. Résultat attendu : le courriel de validation est listé et s'ouvre au clic ; la Direction voit tous les courriels.
 
-**20 · Rapports, comptes-rendus et justificatifs** (Awa Diop) : joignez une pièce typée à un document. Résultat attendu : elle apparaît avec type, taille, auteur et empreinte, s'ouvre et se télécharge ; l'historique indique « Pièce jointe ».
+**20 · Rapports, comptes-rendus et justificatifs** (Awa Diop) : joignez une pièce typée à un document. Résultat attendu : elle apparaît avec type, taille, auteur et empreinte, se visualise dans le lecteur (bouton « Visualiser ») et se télécharge ; l'historique indique « Pièce jointe ».
 
 **21 · Messages entre services** (Moussa Fall, Mariama Sy) : envoyez un message à tout le service Maintenance depuis la carte Communications. Résultat attendu : alerte et courriel côté destinataires ; message visible dans l'historique des communications.
 

@@ -4,6 +4,10 @@ Prototype interactif d'une application de gestion documentaire HSSE : création 
 
 Site statique (HTML, CSS, JavaScript), sans build ni dépendance. Les données sont enregistrées dans le navigateur de chaque visiteur (localStorage).
 
+## Navigation
+
+Le menu s'ouvre sur le Tableau de bord, suivi des onglets de l'application (Documents, Lecture, Notifications, Courriels, Journal, Administration). Les onglets propres au prototype (Conformité, Guide) sont regroupés en bas du menu et seront retirés en production.
+
 ## Comptes
 
 Mot de passe commun : `hsse2026`
@@ -37,7 +41,7 @@ Chaque notification produit le courriel prévu, visible dans l'onglet Courriels 
 
 ## Évidences et communications
 
-Une fiche regroupe les photos géolocalisées et des pièces typées (rapport d'intervention, compte-rendu de réunion, document justificatif ; 10 Mo max), horodatées, avec empreinte SHA-256, ouvrables et téléchargeables. La carte Communications permet d'écrire à un service ou à une personne à propos d'un document, et liste l'historique des messages et des courriels liés.
+Une fiche regroupe les photos géolocalisées et des pièces typées (rapport d'intervention, compte-rendu de réunion, document justificatif ; 10 Mo max), horodatées, avec empreinte SHA-256, visualisables dans le lecteur intégré (bouton « Visualiser ») et téléchargeables. La carte Communications permet d'écrire à un service ou à une personne à propos d'un document, et liste l'historique des messages et des courriels liés.
 
 ## Indicateurs de performance
 
@@ -62,7 +66,7 @@ La fiche d'un document affiche l'historique du workflow par cycle (soumission, v
 
 ## Délégation, comparaison et rapport de lecture
 
-Le valideur d'une étape peut la déléguer à un autre utilisateur (tracé dans l'historique, notification au délégué). Le bouton « Comparer » met en évidence les ajouts et suppressions entre la dernière version et la précédente. L'onglet Lecture (Responsable HSSE et Direction) liste, par document publié, qui a signé la version en vigueur, avec export Excel.
+Le valideur d'une étape peut la déléguer à un autre utilisateur (tracé dans l'historique, notification au délégué). Le bouton « Comparer » met en évidence les ajouts et suppressions entre la dernière version et la précédente. L'onglet Lecture (Responsable HSSE et Direction) présente, par document publié, un tableau aligné en colonnes (lecteur, service, statut, date de signature) avec le nombre de signatures, et un export Excel.
 
 ## Guide de test intégré
 
